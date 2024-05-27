@@ -49,6 +49,13 @@ else:
         print(f"Failed to update ngrok: {e}")
         raise
 
+# Verify ngrok binary existence and executable permission
+if not os.path.exists(NGROK_BIN):
+    raise FileNotFoundError(f"ngrok binary not found at {NGROK_BIN}")
+
+if not os.access(NGROK_BIN, os.X_OK):
+    raise PermissionError(f"ngrok binary is not executable at {NGROK_BIN}")
+
 # Set the custom ngrok configuration
 pyngrok_config = conf.PyngrokConfig(ngrok_path=NGROK_BIN)
 conf.set_default(pyngrok_config)
@@ -58,11 +65,16 @@ ngrok_auth_token = os.getenv("NGROK_AUTH_TOKEN")
 if ngrok_auth_token is None:
     raise ValueError("Missing NGROK_AUTH_TOKEN environment variable. Set it in your .env file.")
 
-# Set the ngrok authentication token
-ngrok.set_auth_token(ngrok_auth_token)
-
-
-
+try:
+    # Set the ngrok authentication token
+    result = subprocess.run([NGROK_BIN, "authtoken", ngrok_auth_token, "--log=stdout"], capture_output=True, text=True, check=True)
+    print(result.stdout)
+    print("Ngrok authentication token set successfully.")
+except subprocess.CalledProcessError as e:
+    print(f"Error setting ngrok authentication token: {e}")
+    print(e.stdout)
+    print(e.stderr)
+    raise
 
 # Wait for ngrok to be ready
 print("Waiting for ngrok to be ready...")
@@ -73,6 +85,7 @@ while ngrok_tunnel is None:
     except Exception as e:
         print(f"Failed to connect to ngrok: {e}")
         time.sleep(2)  # Wait for 2 seconds before retrying
+
 
 # Once connected, get the public URL
 public_url = ngrok_tunnel.public_url
