@@ -1,3 +1,34 @@
+
+import os
+from pyngrok import ngrok, conf
+from dotenv import load_dotenv
+import urllib.request
+import zipfile
+
+load_dotenv()
+
+# Set a custom ngrok path
+NGROK_BIN = "/tmp/ngrok"
+
+# Ensure the ngrok binary directory exists
+os.makedirs(os.path.dirname(NGROK_BIN), exist_ok=True)
+
+# Download ngrok if not already present
+if not os.path.exists(NGROK_BIN):
+    ngrok_url = "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+    ngrok_zip = "/tmp/ngrok.zip"
+    
+    urllib.request.urlretrieve(ngrok_url, ngrok_zip)
+    
+    with zipfile.ZipFile(ngrok_zip, "r") as zip_ref:
+        zip_ref.extractall("/tmp")
+    
+    os.rename("/tmp/ngrok", NGROK_BIN)
+    os.chmod(NGROK_BIN, 0o755)  # Ensure the binary is executable
+
+# Set the custom ngrok configuration
+pyngrok_config = conf.PyngrokConfig(ngrok_path=NGROK_BIN)
+conf.set_default(pyngrok_config)
 import os
 
 # Install required libraries
