@@ -1,7 +1,9 @@
+import os
+
 # Install required libraries
 os.system('pip install -r requirements.txt')
 
-import os
+
 from pyngrok import ngrok
 
 # Load environment variables from .env file
