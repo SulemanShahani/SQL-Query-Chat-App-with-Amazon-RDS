@@ -15,7 +15,7 @@ NGROK_ZIP = "/tmp/ngrok.zip"
 # Ensure the ngrok binary directory exists
 os.makedirs(os.path.dirname(NGROK_BIN), exist_ok=True)
 
-# Download ngrok if not already present
+# Download ngrok if not already present or check if an update is required
 if not os.path.exists(NGROK_BIN):
     try:
         print("Downloading ngrok...")
@@ -28,6 +28,24 @@ if not os.path.exists(NGROK_BIN):
         print("ngrok downloaded and installed successfully.")
     except Exception as e:
         print(f"Failed to download and install ngrok: {e}")
+        raise
+else:
+    try:
+        # Check the current ngrok version
+        current_version = subprocess.check_output([NGROK_BIN, "version"], text=True).strip()
+        print(f"Current ngrok version: {current_version}")
+
+        # Check if the installed version meets the minimum requirement
+        if "2." in current_version:
+            print("Updating ngrok to the latest version...")
+            subprocess.run([NGROK_BIN, "update"], check=True)
+            print("ngrok updated successfully.")
+        elif "3.2." in current_version or "3.3." in current_version:
+            print("ngrok version meets requirements.")
+        else:
+            raise ValueError(f"Unsupported ngrok version: {current_version}")
+    except Exception as e:
+        print(f"Failed to update ngrok: {e}")
         raise
 
 # Set the custom ngrok configuration
@@ -60,6 +78,7 @@ except Exception as e:
     raise
 
 # Your Streamlit app code
+
 
 
 # Set the custom ngrok configuration
