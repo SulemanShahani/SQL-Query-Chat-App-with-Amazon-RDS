@@ -77,15 +77,28 @@ except subprocess.CalledProcessError as e:
     raise
 
 # Wait for ngrok to be ready
-print("Waiting for ngrok to be ready...")
-ngrok_tunnel = None
-while ngrok_tunnel is None:
-    try:
-        ngrok_tunnel = ngrok.connect(8501)
-    except Exception as e:
-        print(f"Failed to connect to ngrok: {e}")
-        time.sleep(2)  # Wait for 2 seconds before retrying
+def connect_to_ngrok():
+    ngrok_tunnel = None
+    while ngrok_tunnel is None:
+        try:
+            ngrok_tunnel = ngrok.connect(8501)
+        except Exception as e:
+            print(f"Failed to connect to ngrok: {e}")
+            time.sleep(2)  # Wait for 2 seconds before retrying
 
+# Retry connecting to ngrok
+for attempt in range(5):  # Retry 5 times
+    try:
+        connect_to_ngrok()
+        break
+    except Exception as e:
+        print(f"Attempt {attempt + 1} failed to connect to ngrok: {e}")
+else:
+    print("Failed to establish a connection to ngrok after multiple attempts.")
+
+# Once connected, get the public URL
+public_url = ngrok_tunnel.public_url
+print(f"Streamlit app is live at: {public_url}")
 
 # Once connected, get the public URL
 public_url = ngrok_tunnel.public_url
