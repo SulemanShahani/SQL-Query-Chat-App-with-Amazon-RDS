@@ -54,20 +54,32 @@ conf.set_default(pyngrok_config)
 
 # Set ngrok authentication token
 ngrok_auth_token = os.getenv("NGROK_AUTH_TOKEN")
-if not ngrok_auth_token:
-    raise ValueError("NGROK_AUTH_TOKEN environment variable is not set.")
+# Update ngrok to the latest version
+print("Updating ngrok to the latest version...")
+ngrok_version = ngrok.get_version()
+if ngrok_version.startswith('2.'):
+    ngrok.kill()
 
+# Wait for ngrok to be ready
+print("Waiting for ngrok to be ready...")
+ngrok_tunnel = None
+while ngrok_tunnel is None:
+    try:
+        ngrok_tunnel = ngrok.connect(8501)
+    except Exception as e:
+        print(f"Failed to connect to ngrok: {e}")
+        time.sleep(2)  # Wait for 2 seconds before retrying
+
+# Once connected, get the public URL
+public_url = ngrok_tunnel.public_url
+print(f"Streamlit app is live at: {public_url}")
+
+# Start ngrok tunnel
 try:
-    print("Setting ngrok authentication token...")
-    command = [NGROK_BIN, "authtoken", ngrok_auth_token, "--log=stdout"]
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
-    print(f"ngrok output: {result.stdout}")
-    print("ngrok authentication token set successfully.")
-except subprocess.CalledProcessError as e:
-    print(f"Failed to set ngrok authentication token: {e}")
-    print(f"Command output: {e.output}")
-    print(f"Command stderr: {e.stderr}")
-    raise
+    public_url = ngrok.connect(8501).public_url
+    print("Streamlit app is live at:", public_url)
+except Exception as e:
+    print(f"Failed to start ngrok tunnel: {e}")
 
 # Start ngrok tunnel
 try:
