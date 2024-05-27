@@ -1,4 +1,5 @@
 import os
+import time
 import urllib.request
 import zipfile
 import subprocess
@@ -54,11 +55,6 @@ conf.set_default(pyngrok_config)
 
 # Set ngrok authentication token
 ngrok_auth_token = os.getenv("NGROK_AUTH_TOKEN")
-# Update ngrok to the latest version
-print("Updating ngrok to the latest version...")
-ngrok_version = ngrok.get_version()
-if ngrok_version.startswith('2.'):
-    ngrok.kill()
 
 # Wait for ngrok to be ready
 print("Waiting for ngrok to be ready...")
@@ -74,32 +70,9 @@ while ngrok_tunnel is None:
 public_url = ngrok_tunnel.public_url
 print(f"Streamlit app is live at: {public_url}")
 
-# Start ngrok tunnel
-try:
-    public_url = ngrok.connect(8501).public_url
-    print("Streamlit app is live at:", public_url)
-except Exception as e:
-    print(f"Failed to start ngrok tunnel: {e}")
-
-
-
-
-# Your Streamlit app code
-
-
-
-# Set the custom ngrok configuration
-pyngrok_config = conf.PyngrokConfig(ngrok_path=NGROK_BIN)
-conf.set_default(pyngrok_config)
-
-
-
-# Start ngrok to create a public URL for the Streamlit app
-public_url = ngrok.connect(8501)
-print(f"Streamlit app will be accessible at: {public_url}")
-
-# Run the Streamlit app
-os.system('streamlit run app.py')
+# Your Streamlit app code here...
+# For example:
+# os.system('streamlit run app.py')
 
 # Print the ngrok public URL
 print(f"Streamlit app running at: {public_url}")
