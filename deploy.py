@@ -93,12 +93,12 @@ for attempt in range(5):  # Retry 5 times
         break
     except Exception as e:
         print(f"Attempt {attempt + 1} failed to connect to ngrok: {e}")
-else:
-    print("Failed to establish a connection to ngrok after multiple attempts.")
+        if attempt == 4:
+            print("Max retry attempts reached. Exiting...")
+            exit(1)
+        time.sleep(5)  # Wait 5 seconds before retrying
 
-# Once connected, get the public URL
-public_url = ngrok_tunnel.public_url
-print(f"Streamlit app is live at: {public_url}")
+
 
 # Once connected, get the public URL
 public_url = ngrok_tunnel.public_url
