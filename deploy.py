@@ -1,3 +1,6 @@
+# Install required libraries
+os.system('pip install -r requirements.txt')
+
 import os
 from pyngrok import ngrok
 
@@ -8,8 +11,7 @@ load_dotenv()
 # Set ngrok authentication token
 ngrok.set_auth_token(os.getenv("NGROK_AUTH_TOKEN"))
 
-# Install required libraries
-os.system('pip install -r requirements.txt')
+
 
 # Start ngrok to create a public URL for the Streamlit app
 public_url = ngrok.connect(8501)
