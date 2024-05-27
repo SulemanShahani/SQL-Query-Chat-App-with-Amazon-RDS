@@ -55,6 +55,14 @@ conf.set_default(pyngrok_config)
 
 # Set ngrok authentication token
 ngrok_auth_token = os.getenv("NGROK_AUTH_TOKEN")
+if ngrok_auth_token is None:
+    raise ValueError("Missing NGROK_AUTH_TOKEN environment variable. Set it in your .env file.")
+
+# Set the ngrok authentication token
+ngrok.set_auth_token(ngrok_auth_token)
+
+
+
 
 # Wait for ngrok to be ready
 print("Waiting for ngrok to be ready...")
@@ -70,9 +78,8 @@ while ngrok_tunnel is None:
 public_url = ngrok_tunnel.public_url
 print(f"Streamlit app is live at: {public_url}")
 
-# Your Streamlit app code here...
-# For example:
-# os.system('streamlit run app.py')
+# Run the Streamlit app
+os.system('streamlit run app.py')
 
 # Print the ngrok public URL
 print(f"Streamlit app running at: {public_url}")
