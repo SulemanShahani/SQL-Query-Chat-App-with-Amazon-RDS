@@ -84,3 +84,8 @@ project-directory/
 ├── app.py              # Main Streamlit application
 ├── deploy.py           # Deployment script
 └── requirements.txt    # List of Python dependencies
+
+
+<img width="933" alt="Capture" src="https://github.com/SulemanShahani/SQL-Query-Chat-App-with-Amazon-RDS/assets/164818514/1f6c8f43-7e38-47cd-a6a8-c9dd34491c14">
+
+
