@@ -3,4 +3,4 @@ mysql-connector-python
 transformers
 python-dotenv
 pyngrok
-ngrok
+ngrok==3.2.0
