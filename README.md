@@ -85,6 +85,8 @@ project-directory/
 ├── deploy.py           # Deployment script
 └── requirements.txt    # List of Python dependencies
 
+<img width="933" alt="Capture" src="https://github.com/SulemanShahani/SQL-Query-Chat-App-with-Amazon-RDS/assets/164818514/71eea35c-e7b4-459b-b027-ff8fc666db4a">
+
 
 
 
